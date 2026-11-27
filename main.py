@@ -1,27 +1,30 @@
-"""One Word for Your Wi-Fi: write a single word naming the Wi-Fi.
+#!/usr/bin/env python3
+"""One Word for Your Wi-Fi — entry program.
 
-The word is the joke itself: home Wi-Fi that vanishes mid-call without
-a word of explanation, then comes back like nothing happened. Ghosting.
+Writes one word describing my Wi-Fi to /output/entry.txt.
+
+The word is "Deserter": my Wi-Fi deserts me right in the middle of
+the call — full bars one second, gone the next, like it walked out
+on the conversation.
 """
 
 from pathlib import Path
 
-WORD = "Ghosting"
-OUTPUT = Path("/output/entry.txt")
-
-
-def validate(word: str) -> str:
-    """Enforce the gate: 1-20 chars, exactly one word, not only whitespace."""
-    if not 1 <= len(word) <= 20:
-        raise ValueError(f"word must be 1-20 chars, got {len(word)}")
-    if word != word.strip() or any(ch.isspace() for ch in word):
-        raise ValueError("word must be a single word with no whitespace")
-    return word
+WORD = "Deserter"
+OUTPUT_PATH = Path("/output/entry.txt")
 
 
 def main() -> None:
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT.write_text(validate(WORD), encoding="utf-8")
+    word = WORD.strip()
+    # The sealed scorer's gate: /output/entry.txt must be UTF-8 text
+    # of 1 to 20 characters, not only white space.
+    if not word or len(word) > 20:
+        raise ValueError("entry must be 1-20 characters, not only white space")
+    if any(ch.isspace() for ch in word):
+        raise ValueError("entry must be a single word")
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    OUTPUT_PATH.write_text(word, encoding="utf-8")
+    print(word)
 
 
 if __name__ == "__main__":
